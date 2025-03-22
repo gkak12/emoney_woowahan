@@ -1,5 +1,6 @@
 package com.emoney.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +33,9 @@ public class EmoneyDetail {
 
     @Column(name = "CREATION_DATE_TIME")
     private LocalDateTime creationDateTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMONEY_SEQ")
+    @JsonBackReference
+    private Emoney emoney;
 }

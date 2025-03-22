@@ -43,4 +43,8 @@ public class Emoney {
 
     @Column(name = "EXPIRATION_DATE_TIME")
     private LocalDateTime expirationDateTime;
+
+    @OneToMany(mappedBy = "emoney", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<EmoneyDetail> emoneyDetails;
 }
