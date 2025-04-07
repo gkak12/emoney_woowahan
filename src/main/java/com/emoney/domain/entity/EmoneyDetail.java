@@ -25,6 +25,9 @@ public class EmoneyDetail {
     @Column(name = "USER_SEQ")
     private Long userSeq;
 
+    @Column(name = "ACCUMULATION_SEQ")
+    private Long accumulationSeq;
+
     @Column(name = "TYPE_SEQ")
     private Long typeSeq;
 
@@ -33,6 +36,9 @@ public class EmoneyDetail {
 
     @Column(name = "CREATION_DATE_TIME")
     private LocalDateTime creationDateTime;
+
+    @Column(name = "EXPIRATION_DATE_TIME")
+    private LocalDateTime expirationDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMONEY_SEQ")
