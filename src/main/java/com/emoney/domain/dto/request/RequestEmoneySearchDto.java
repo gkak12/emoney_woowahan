@@ -13,7 +13,7 @@ public class RequestEmoneySearchDto extends RequestPageDto {
 
     private Long emoneySeq;
     private Long userSeq;
-    private Long orderSeq;
+    private Long productSeq;
     private Long typeSeq;
     private String content;
 
