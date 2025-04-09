@@ -1,4 +1,7 @@
 package com.emoney.repository;
 
-public interface EmoneyRepository {
+import com.emoney.domain.entity.Emoney;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmoneyRepository extends JpaRepository<Emoney, Long>, EmoneyRepositoryDsl {
 }
