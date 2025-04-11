@@ -39,5 +39,8 @@ out/
 ### Mac OS ###
 .DS_Store
 
+### logs ###
+/logs
+
 ### todo.txt ###
 todo.txt
