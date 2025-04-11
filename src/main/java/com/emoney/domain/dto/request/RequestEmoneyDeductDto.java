@@ -18,7 +18,8 @@ public class RequestEmoneyDeductDto {
     @NotNull
     private Long userSeq;
 
-    private Long orderSeq;
+    @NotNull
+    private Long productSeq;
 
     @NotNull
     private Long typeSeq;
