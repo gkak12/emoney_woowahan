@@ -1,9 +1,12 @@
 package com.emoney.service.impl;
 
+import com.emoney.comm.enums.EmoneyEnums;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
+import com.emoney.domain.dto.request.RequestEmoneySaveDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyDetail;
+import com.emoney.domain.mapper.EmoneyMapper;
 import com.emoney.repository.EmoneyDetailRepository;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.service.EmoneyService;
@@ -19,8 +22,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmoneyServiceImpl implements EmoneyService {
 
+    private final EmoneyMapper emoneyMapper;
+
     private final EmoneyRepository emoneyRepository;
     private final EmoneyDetailRepository emoneyDetailRepository;
+
+    @Override
+    public void saveEmoney(RequestEmoneySaveDto emoneySaveDto) {
+        // 1. 적립금 적립시간/만료시간 설정
+        LocalDateTime craationDateTime = LocalDateTime.now();
+        LocalDateTime expirationDateTime = craationDateTime.plusDays(30);
+
+        // 2. RequestEmoneySaveDto -> Emoney Entity로 변환 및 저장
+        Emoney emoney = emoneyMapper.toEntity(emoneySaveDto);
+        emoney.setTypeSeq(EmoneyEnums.SAVE.getVal());
+        emoney.setCreationDateTime(craationDateTime);
+        emoney.setExpirationDateTime(expirationDateTime);
+        emoneyRepository.save(emoney);
+
+        // 3. EmoneyDetail Entity 생성 및 저장
+        EmoneyDetail emoneyDetail = EmoneyDetail.builder()
+            .userSeq(emoneySaveDto.getUserSeq())
+            .accumulationSeq(emoney.getEmoneySeq())
+            .typeSeq(EmoneyEnums.SAVE.getVal())
+            .amount(emoneySaveDto.getAmount())
+            .creationDateTime(craationDateTime)
+            .expirationDateTime(expirationDateTime)
+            .emoney(emoney)
+            .build();
+        emoneyDetailRepository.save(emoneyDetail);
+    }
 
     @Override
     public void deductEmoney(RequestEmoneyDeductDto emoneyDeductDto) {
@@ -36,6 +67,7 @@ public class EmoneyServiceImpl implements EmoneyService {
 
         // 3. 적립금 사용 내역 추가
         LocalDateTime localDateTime = LocalDateTime.now();
+
         Emoney emoney = Emoney.builder()
                 .userSeq(emoneyDeductDto.getUserSeq())
                 .productSeq(emoneyDeductDto.getProductSeq())
@@ -60,7 +92,7 @@ public class EmoneyServiceImpl implements EmoneyService {
                 requestAmount -= amount;
             } else {
                 amount -= requestAmount;
-                requestAmount = 0l;
+                requestAmount = 0L;
             }
 
             emoneyDetailRepository.save(
