@@ -2,6 +2,8 @@ package com.emoney.service.impl;
 
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
+import com.emoney.domain.entity.Emoney;
+import com.emoney.domain.entity.EmoneyDetail;
 import com.emoney.repository.EmoneyDetailRepository;
 import com.emoney.repository.EmoneyRepository;
 import com.emoney.service.EmoneyService;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +34,20 @@ public class EmoneyServiceImpl implements EmoneyService {
             throw new RuntimeException("현재 사용 가능한 적립금이 사용 요청한 적립금 보다 적습니다.");
         }
 
-        // 3. 각 적립금 사용 및 차감
+        // 3. 적립금 사용 내역 추가
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Emoney emoney = Emoney.builder()
+                .userSeq(emoneyDeductDto.getUserSeq())
+                .productSeq(emoneyDeductDto.getProductSeq())
+                .typeSeq(emoneyDeductDto.getTypeSeq())
+                .amount(-requestAmount)
+                .content(emoneyDeductDto.getContent())
+                .creationDateTime(localDateTime)
+                .build();
+
+        emoneyRepository.save(emoney);
+
+        // 4. 각 적립금 사용 및 차감 추가
         for(ResponseEmoneyDetailDto emoneyDetailDto : list) {
             /**
              * 사용 요청한 적립금이 현재 적립금 보다 크면, 현재 적립금 0원 처리 및 사용 요청한 적립금 차감 처리
@@ -47,9 +63,16 @@ public class EmoneyServiceImpl implements EmoneyService {
                 requestAmount = 0l;
             }
 
-            emoneyDetailRepository.save(null);
+            emoneyDetailRepository.save(
+                EmoneyDetail.builder()
+                    .userSeq(emoneyDeductDto.getUserSeq())
+                    .accumulationSeq(emoneyDetailDto.getAccumulationSeq())
+                    .typeSeq(emoneyDeductDto.getTypeSeq())
+                    .amount(amount)
+                    .creationDateTime(localDateTime)
+                    .emoney(emoney)
+                    .build()
+            );
         }
-
-        emoneyRepository.save(null);
     }
 }
