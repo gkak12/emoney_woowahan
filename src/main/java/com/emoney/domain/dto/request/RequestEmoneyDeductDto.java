@@ -25,9 +25,6 @@ public class RequestEmoneyDeductDto {
     private Long typeSeq;
 
     @NotNull
-    private Long usageTypeSeq;
-
-    @NotNull
     private Long amount;
 
     private String content;
