@@ -87,13 +87,8 @@ public class EmoneyServiceImpl implements EmoneyService {
              */
             Long amount = emoneyDetailDto.getAmount();
 
-            if(requestAmount > amount) {
-                amount *= -1;
-                requestAmount -= amount;
-            } else {
-                amount -= requestAmount;
-                requestAmount = 0L;
-            }
+            requestAmount = requestAmount > amount ? requestAmount-amount : 0L;
+            amount *= -1;
 
             emoneyDetailRepository.save(
                 EmoneyDetail.builder()

@@ -36,17 +36,16 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
             .select(Projections.fields(
                 ResponseEmoneyDetailDto.class,
                 emoneyDetail.accumulationSeq,
-                emoneyDetail.amount.sum()
+                emoneyDetail.amount.sum().as("amount")
             ))
             .from(emoneyDetail)
             .where(
                 builder
                     .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, userSeq))
-                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoney.expirationDateTime, null, now))
-                    .and(emoneyDetail.amount.sum().gt(0l))
+                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoney.expirationDateTime, now, null))
             )
             .groupBy(emoneyDetail.accumulationSeq)
-            .orderBy(emoneyDetail.creationDateTime.asc())
+            .orderBy(emoneyDetail.accumulationSeq.asc())
             .fetch();
     }
 }
