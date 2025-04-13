@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -56,9 +57,15 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     public void deductEmoney(RequestEmoneyDeductDto emoneyDeductDto) {
         // 1. 사용 가능 적립금 조회
-        List<ResponseEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto);
+        List<ResponseEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto).stream()
+            .filter(item -> item.getAmount() > 0)
+            .toList();
+
+        Long totalUsableAmount = list.stream()
+            .map(ResponseEmoneyDetailDto::getAmount)
+            .reduce(0L, Long::sum);
+
         Long requestAmount = emoneyDeductDto.getAmount();
-        Long totalUsableAmount = list.stream().map(ResponseEmoneyDetailDto::getAmount).reduce(0L, Long::sum);
 
         // 2. 사용 가능 적립금이 사용 요청한 적립금 비교해서 작으면 예외 발생
         if(totalUsableAmount < requestAmount) {
@@ -90,7 +97,7 @@ public class EmoneyServiceImpl implements EmoneyService {
             if(requestAmount > amount){
                 requestAmount = requestAmount - amount;
             } else {
-                amount -= requestAmount;
+                amount = requestAmount;
                 requestAmount = 0L;
             }
 
