@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static com.emoney.domain.entity.QEmoney.emoney;
 import static com.emoney.domain.entity.QEmoneyDetail.emoneyDetail;
 
 @Slf4j
@@ -36,13 +35,14 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
             .select(Projections.fields(
                 ResponseEmoneyDetailDto.class,
                 emoneyDetail.accumulationSeq,
-                emoneyDetail.amount.sum().as("amount")
+                emoneyDetail.amount.sum().as("amount"),
+                emoneyDetail.expirationDateTime.max().as("expirationDateTime")
             ))
             .from(emoneyDetail)
             .where(
                 builder
-                    .and(ConditionBuilderUtil.buildEquals(emoney.userSeq, userSeq))
-                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoney.expirationDateTime, now, null))
+                    .and(ConditionBuilderUtil.buildEquals(emoneyDetail.userSeq, userSeq))
+                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoneyDetail.expirationDateTime, now, null))
             )
             .groupBy(emoneyDetail.accumulationSeq)
             .orderBy(emoneyDetail.accumulationSeq.asc())

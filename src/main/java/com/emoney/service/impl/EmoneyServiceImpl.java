@@ -87,16 +87,21 @@ public class EmoneyServiceImpl implements EmoneyService {
              */
             Long amount = emoneyDetailDto.getAmount();
 
-            requestAmount = requestAmount > amount ? requestAmount-amount : 0L;
-            amount *= -1;
+            if(requestAmount > amount){
+                requestAmount = requestAmount - amount;
+            } else {
+                amount -= requestAmount;
+                requestAmount = 0L;
+            }
 
             emoneyDetailRepository.save(
                 EmoneyDetail.builder()
                     .userSeq(emoneyDeductDto.getUserSeq())
                     .accumulationSeq(emoneyDetailDto.getAccumulationSeq())
                     .typeSeq(emoneyDeductDto.getTypeSeq())
-                    .amount(amount)
+                    .amount(-amount)
                     .creationDateTime(localDateTime)
+                    .expirationDateTime(emoneyDetailDto.getExpirationDateTime())
                     .emoney(emoney)
                     .build()
             );
