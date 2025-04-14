@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,6 +38,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         emoney.setTypeSeq(EmoneyEnums.SAVE.getVal());
         emoney.setCreationDateTime(craationDateTime);
         emoney.setExpirationDateTime(expirationDateTime);
+
         emoneyRepository.save(emoney);
 
         // 3. EmoneyDetail Entity 생성 및 저장
@@ -51,6 +51,7 @@ public class EmoneyServiceImpl implements EmoneyService {
             .expirationDateTime(expirationDateTime)
             .emoney(emoney)
             .build();
+
         emoneyDetailRepository.save(emoneyDetail);
     }
 
