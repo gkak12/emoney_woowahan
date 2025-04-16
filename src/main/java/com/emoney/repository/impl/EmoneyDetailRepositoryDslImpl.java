@@ -1,7 +1,7 @@
 package com.emoney.repository.impl;
 
+import com.emoney.domain.dto.info.InfoEmoneyDetailDto;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
-import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
 import com.emoney.repository.EmoneyDetailRepositoryDsl;
 import com.emoney.util.ConditionBuilderUtil;
 import com.querydsl.core.BooleanBuilder;
@@ -25,7 +25,7 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ResponseEmoneyDetailDto> findAllUsableEmoneyList(RequestEmoneyDeductDto requestEmoneyDeductDto) {
+    public List<InfoEmoneyDetailDto> findAllUsableEmoneyList(RequestEmoneyDeductDto requestEmoneyDeductDto) {
         Long userSeq = Objects.requireNonNull(requestEmoneyDeductDto.getUserSeq(), "userSeq is null.");
         LocalDateTime now = LocalDateTime.now();
 
@@ -33,7 +33,7 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
 
         return jpaQueryFactory
             .select(Projections.fields(
-                ResponseEmoneyDetailDto.class,
+                InfoEmoneyDetailDto.class,
                 emoneyDetail.accumulationSeq,
                 emoneyDetail.amount.sum().as("amount"),
                 emoneyDetail.expirationDateTime.max().as("expirationDateTime")

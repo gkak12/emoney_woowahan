@@ -1,10 +1,10 @@
 package com.emoney.service.impl;
 
 import com.emoney.comm.enums.EmoneyEnums;
+import com.emoney.domain.dto.info.InfoEmoneyDetailDto;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
 import com.emoney.domain.dto.request.RequestEmoneySearchDto;
-import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDto;
 import com.emoney.domain.dto.response.ResponseEmoneyListDto;
 import com.emoney.domain.dto.response.ResponsePageDto;
@@ -63,12 +63,12 @@ public class EmoneyServiceImpl implements EmoneyService {
     @Override
     public void deductEmoney(RequestEmoneyDeductDto emoneyDeductDto) {
         // 1. 사용 가능 적립금 조회
-        List<ResponseEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto).stream()
+        List<InfoEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto).stream()
             .filter(item -> item.getAmount() > 0)
             .toList();
 
         Long totalUsableAmount = list.stream()
-            .map(ResponseEmoneyDetailDto::getAmount)
+            .map(InfoEmoneyDetailDto::getAmount)
             .reduce(0L, Long::sum);
 
         Long requestAmount = emoneyDeductDto.getAmount();
@@ -93,7 +93,7 @@ public class EmoneyServiceImpl implements EmoneyService {
         emoneyRepository.save(emoney);
 
         // 4. 각 적립금 사용 및 차감 추가
-        for(ResponseEmoneyDetailDto emoneyDetailDto : list) {
+        for(InfoEmoneyDetailDto emoneyDetailDto : list) {
             /**
              * 사용 요청한 적립금이 현재 적립금 보다 크면, 현재 적립금 0원 처리 및 사용 요청한 적립금 차감 처리
              * 반대로 작거나 작으면, 현재 적립금에서 사용 요청한 적립금 차감 및 사용 요청한 적립금 0원 처리

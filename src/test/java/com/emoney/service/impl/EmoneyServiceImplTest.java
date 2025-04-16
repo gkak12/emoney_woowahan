@@ -1,8 +1,7 @@
 package com.emoney.service.impl;
 
+import com.emoney.domain.dto.info.InfoEmoneyDetailDto;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
-import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
-import com.emoney.domain.entity.EmoneyDetail;
 import com.emoney.repository.EmoneyDetailRepository;
 import com.emoney.repository.EmoneyRepository;
 import org.junit.jupiter.api.Test;
@@ -32,13 +31,13 @@ public class EmoneyServiceImplTest {
         Long expectationAmount = 1500L;
         int expectationSize = 1;
 
-        ResponseEmoneyDetailDto emoneyDetail1 = ResponseEmoneyDetailDto.builder()
+        InfoEmoneyDetailDto emoneyDetail1 = InfoEmoneyDetailDto.builder()
             .accumulationSeq(1L)
             .amount(0L)
             .expirationDateTime(LocalDateTime.of(2025, 5, 12, 10, 30))
             .build();
 
-        ResponseEmoneyDetailDto emoneyDetail2 = ResponseEmoneyDetailDto.builder()
+        InfoEmoneyDetailDto emoneyDetail2 = InfoEmoneyDetailDto.builder()
             .accumulationSeq(2L)
             .amount(1500L)
             .expirationDateTime(LocalDateTime.of(2025, 5, 14, 10, 30))
@@ -48,17 +47,17 @@ public class EmoneyServiceImplTest {
             .amount(expectationAmount)
             .build();
 
-        List<ResponseEmoneyDetailDto> emoneyList = List.of(emoneyDetail1, emoneyDetail2);
+        List<InfoEmoneyDetailDto> emoneyList = List.of(emoneyDetail1, emoneyDetail2);
 
         when(emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto)).thenReturn(emoneyList);
 
         // When
-        List<ResponseEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto).stream()
+        List<InfoEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto).stream()
             .filter(item -> item.getAmount() > 0)
             .toList();
 
         Long totalUsableAmount = list.stream()
-            .map(ResponseEmoneyDetailDto::getAmount)
+            .map(InfoEmoneyDetailDto::getAmount)
             .reduce(0L, Long::sum);
 
         // Then
@@ -72,13 +71,13 @@ public class EmoneyServiceImplTest {
         Long expectationAmount = 500L;
         Long requestAmount = 2500L;
 
-        ResponseEmoneyDetailDto emoneyDetail1 = ResponseEmoneyDetailDto.builder()
+        InfoEmoneyDetailDto emoneyDetail1 = InfoEmoneyDetailDto.builder()
                 .accumulationSeq(1L)
                 .amount(1000L)
                 .expirationDateTime(LocalDateTime.of(2025, 5, 12, 10, 30))
                 .build();
 
-        ResponseEmoneyDetailDto emoneyDetail2 = ResponseEmoneyDetailDto.builder()
+        InfoEmoneyDetailDto emoneyDetail2 = InfoEmoneyDetailDto.builder()
                 .accumulationSeq(2L)
                 .amount(2000L)
                 .expirationDateTime(LocalDateTime.of(2025, 5, 14, 10, 30))
@@ -88,14 +87,14 @@ public class EmoneyServiceImplTest {
                 .amount(expectationAmount)
                 .build();
 
-        List<ResponseEmoneyDetailDto> emoneyList = List.of(emoneyDetail1, emoneyDetail2);
-        List<ResponseEmoneyDetailDto> dataList = new ArrayList<>(List.of(emoneyDetail1, emoneyDetail2));
+        List<InfoEmoneyDetailDto> emoneyList = List.of(emoneyDetail1, emoneyDetail2);
+        List<InfoEmoneyDetailDto> dataList = new ArrayList<>(List.of(emoneyDetail1, emoneyDetail2));
 
         when(emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto)).thenReturn(emoneyList);
 
         // When
-        List<ResponseEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto);
-        for(ResponseEmoneyDetailDto emoneyDetailDto : list){
+        List<InfoEmoneyDetailDto> list = emoneyDetailRepository.findAllUsableEmoneyList(emoneyDeductDto);
+        for(InfoEmoneyDetailDto emoneyDetailDto : list){
             Long amount = emoneyDetailDto.getAmount();
 
             if(requestAmount > amount){
@@ -106,10 +105,8 @@ public class EmoneyServiceImplTest {
             }
 
             dataList.add(
-                ResponseEmoneyDetailDto.builder()
-                    .userSeq(emoneyDeductDto.getUserSeq())
+                    InfoEmoneyDetailDto.builder()
                     .accumulationSeq(emoneyDetailDto.getAccumulationSeq())
-                    .typeSeq(emoneyDeductDto.getTypeSeq())
                     .amount(-amount)
                     .expirationDateTime(emoneyDetailDto.getExpirationDateTime())
                     .build()
@@ -117,7 +114,7 @@ public class EmoneyServiceImplTest {
         }
 
         // Then
-        Long actualAmount = dataList.stream().map(ResponseEmoneyDetailDto::getAmount).reduce(0L, Long::sum);
+        Long actualAmount = dataList.stream().map(InfoEmoneyDetailDto::getAmount).reduce(0L, Long::sum);
         assertEquals(expectationAmount, actualAmount);
     }
 }
