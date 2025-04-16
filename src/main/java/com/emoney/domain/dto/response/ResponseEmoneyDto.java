@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,6 +17,6 @@ public class ResponseEmoneyDto {
     private Long typeSeq;
     private Long amount;
     private String content;
-    private LocalDateTime creationDateTime;
-    private LocalDateTime expirationDateTime;
+    private String creationDateTime;
+    private String expirationDateTime;
 }
