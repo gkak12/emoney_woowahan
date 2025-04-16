@@ -9,6 +9,6 @@ import java.util.Map;
 
 public interface EmoneyRepositoryDsl {
 
-    Page<Emoney> findEmoneyPaging(RequestEmoneySearchDto searchDto);
-    Map<String, Object> findCancellationEmoney(RequestEmoneyCancelDto requestEmoneyCancelDto);
+    Page<Emoney> findEmoneyPaging(RequestEmoneySearchDto emoneySearchDto);
+    Map<String, Object> findCancellationEmoney(RequestEmoneyCancelDto emoneyCancelDto);
 }

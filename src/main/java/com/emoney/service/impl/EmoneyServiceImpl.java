@@ -3,7 +3,11 @@ package com.emoney.service.impl;
 import com.emoney.comm.enums.EmoneyEnums;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
+import com.emoney.domain.dto.request.RequestEmoneySearchDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDto;
+import com.emoney.domain.dto.response.ResponseEmoneyListDto;
+import com.emoney.domain.dto.response.ResponsePageDto;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyDetail;
 import com.emoney.domain.mapper.EmoneyMapper;
@@ -12,6 +16,7 @@ import com.emoney.repository.EmoneyRepository;
 import com.emoney.service.EmoneyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -114,5 +119,24 @@ public class EmoneyServiceImpl implements EmoneyService {
                     .build()
             );
         }
+    }
+
+    @Override
+    public ResponseEmoneyListDto findEmoneyPaging(RequestEmoneySearchDto emoneySearchDto) {
+        Page<Emoney> pageInfo = emoneyRepository.findEmoneyPaging(emoneySearchDto);
+
+        List<ResponseEmoneyDto> list = pageInfo.get().toList().stream()
+            .map(emoneyMapper::toDto)
+            .toList();
+
+        ResponsePageDto page = ResponsePageDto.builder()
+            .totalPages(pageInfo.getTotalPages())
+            .totalItems(pageInfo.getTotalElements())
+            .build();
+
+        return ResponseEmoneyListDto.builder()
+                .list(list)
+                .page(page)
+                .build();
     }
 }

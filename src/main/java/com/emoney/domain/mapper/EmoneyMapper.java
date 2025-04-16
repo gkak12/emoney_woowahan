@@ -1,6 +1,7 @@
 package com.emoney.domain.mapper;
 
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDto;
 import com.emoney.domain.entity.Emoney;
 import org.mapstruct.*;
 
@@ -14,4 +15,5 @@ import org.mapstruct.*;
 public interface EmoneyMapper {
 
     Emoney toEntity(RequestEmoneySaveDto emoneySaveDto);
+    ResponseEmoneyDto toDto(Emoney emoney);
 }

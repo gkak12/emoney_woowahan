@@ -2,10 +2,13 @@ package com.emoney.api;
 
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
+import com.emoney.domain.dto.request.RequestEmoneySearchDto;
+import com.emoney.domain.dto.response.ResponseEmoneyListDto;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +33,11 @@ public class EmoneyController {
     public ResponseEntity<Void> deductEmoney(@RequestBody @Valid RequestEmoneyDeductDto emoneyDeductDto){
         emoneyService.deductEmoney(emoneyDeductDto);
         return ResponseEntity.ok().build();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/findEmoneyPaging.do")
+    public ResponseEntity<ResponseEmoneyListDto> findEmoneyPaging(@ParameterObject RequestEmoneySearchDto emoneySearchDto){
+        return ResponseEntity.ok(emoneyService.findEmoneyPaging(emoneySearchDto));
     }
 }
