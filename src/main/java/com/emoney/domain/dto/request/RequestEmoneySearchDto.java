@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class RequestEmoneySearchDto extends RequestPageDto {
 
     private Long emoneySeq;
+    private Long emoneyDetailSeq;
     private Long userSeq;
     private Long productSeq;
     private Long typeSeq;

@@ -33,8 +33,8 @@ public class EmoneyRepositoryDslImpl implements EmoneyRepositoryDsl {
     @Override
     public Page<Emoney> findEmoneyPaging(RequestEmoneySearchDto searchDto) {
         Pageable pageable = PageRequest.of(
-                searchDto.getPageNumber(),
-                searchDto.getPageSize()
+            searchDto.getPageNumber(),
+            searchDto.getPageSize()
         );
 
         BooleanBuilder builder = new BooleanBuilder();

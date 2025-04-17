@@ -5,11 +5,10 @@ import com.emoney.domain.dto.info.InfoEmoneyDetailDto;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
 import com.emoney.domain.dto.request.RequestEmoneySearchDto;
-import com.emoney.domain.dto.response.ResponseEmoneyDto;
-import com.emoney.domain.dto.response.ResponseEmoneyListDto;
-import com.emoney.domain.dto.response.ResponsePageDto;
+import com.emoney.domain.dto.response.*;
 import com.emoney.domain.entity.Emoney;
 import com.emoney.domain.entity.EmoneyDetail;
+import com.emoney.domain.mapper.EmoneyDetailMapper;
 import com.emoney.domain.mapper.EmoneyMapper;
 import com.emoney.repository.EmoneyDetailRepository;
 import com.emoney.repository.EmoneyRepository;
@@ -28,6 +27,7 @@ import java.util.List;
 public class EmoneyServiceImpl implements EmoneyService {
 
     private final EmoneyMapper emoneyMapper;
+    private final EmoneyDetailMapper emoneyDetailMapper;
 
     private final EmoneyRepository emoneyRepository;
     private final EmoneyDetailRepository emoneyDetailRepository;
@@ -138,5 +138,24 @@ public class EmoneyServiceImpl implements EmoneyService {
                 .list(list)
                 .page(page)
                 .build();
+    }
+
+    @Override
+    public ResponseEmoneyDetailListDto findEmoneyDetailPaging(RequestEmoneySearchDto emoneySearchDto) {
+        Page<EmoneyDetail> pageInfo = emoneyDetailRepository.findEmoneyDetailPaging(emoneySearchDto);
+
+        List<ResponseEmoneyDetailDto> list = pageInfo.get().toList().stream()
+            .map(emoneyDetailMapper::toDto)
+            .toList();
+
+        ResponsePageDto page = ResponsePageDto.builder()
+            .totalPages(pageInfo.getTotalPages())
+            .totalItems(pageInfo.getTotalElements())
+            .build();
+
+        return ResponseEmoneyDetailListDto.builder()
+            .list(list)
+            .page(page)
+            .build();
     }
 }

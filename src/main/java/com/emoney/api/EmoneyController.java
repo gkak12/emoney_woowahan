@@ -3,6 +3,7 @@ package com.emoney.api;
 import com.emoney.domain.dto.request.RequestEmoneyDeductDto;
 import com.emoney.domain.dto.request.RequestEmoneySaveDto;
 import com.emoney.domain.dto.request.RequestEmoneySearchDto;
+import com.emoney.domain.dto.response.ResponseEmoneyDetailListDto;
 import com.emoney.domain.dto.response.ResponseEmoneyListDto;
 import com.emoney.service.EmoneyService;
 import jakarta.validation.Valid;
@@ -39,5 +40,11 @@ public class EmoneyController {
     @GetMapping("/findEmoneyPaging.do")
     public ResponseEntity<ResponseEmoneyListDto> findEmoneyPaging(@ParameterObject RequestEmoneySearchDto emoneySearchDto){
         return ResponseEntity.ok(emoneyService.findEmoneyPaging(emoneySearchDto));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/findEmoneyDetailPaging.do")
+    public ResponseEntity<ResponseEmoneyDetailListDto> findEmoneyDetailPaging(@ParameterObject RequestEmoneySearchDto emoneySearchDto){
+        return ResponseEntity.ok(emoneyService.findEmoneyDetailPaging(emoneySearchDto));
     }
 }

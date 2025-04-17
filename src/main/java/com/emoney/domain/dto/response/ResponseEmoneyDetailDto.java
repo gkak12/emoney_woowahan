@@ -18,6 +18,6 @@ public class ResponseEmoneyDetailDto {
     private Long accumulationSeq;
     private Long typeSeq;
     private Long amount;
-    private LocalDateTime creationDateTime;
-    private LocalDateTime expirationDateTime;
+    private String creationDateTime;
+    private String expirationDateTime;
 }
