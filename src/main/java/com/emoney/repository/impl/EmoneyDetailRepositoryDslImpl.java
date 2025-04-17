@@ -20,12 +20,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.emoney.domain.entity.QEmoney.emoney;
 import static com.emoney.domain.entity.QEmoneyDetail.emoneyDetail;
 
 @Slf4j

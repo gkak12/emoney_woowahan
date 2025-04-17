@@ -40,6 +40,9 @@ public class EmoneyDetail {
     @Column(name = "EXPIRATION_DATE_TIME")
     private LocalDateTime expirationDateTime;
 
+    @Column(name = "EMONEY_SEQ", insertable = false, updatable = false)
+    private Long emoneySeq;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMONEY_SEQ")
     @JsonBackReference
