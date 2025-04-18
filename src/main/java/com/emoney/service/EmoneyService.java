@@ -12,4 +12,5 @@ public interface EmoneyService {
     void deductEmoney(RequestEmoneyDeductDto emoneyDeductDto);
     ResponseEmoneyListDto findEmoneyPaging(RequestEmoneySearchDto emoneySearchDto);
     ResponseEmoneyDetailListDto findEmoneyDetailPaging(RequestEmoneySearchDto emoneySearchDto);
+    ResponseEmoneyDetailListDto findEmoneyDetailBalancePaging(RequestEmoneySearchDto emoneySearchDto);
 }

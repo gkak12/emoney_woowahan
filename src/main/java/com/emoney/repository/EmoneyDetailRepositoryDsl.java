@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface EmoneyDetailRepositoryDsl {
 
-    Page<EmoneyDetail> findEmoneyDetailPaging(RequestEmoneySearchDto emoneySearchDto);
     List<InfoEmoneyDetailDto> findAllUsableEmoneyList(RequestEmoneyDeductDto emoneyDeductDto);
+    Page<EmoneyDetail> findEmoneyDetailPaging(RequestEmoneySearchDto emoneySearchDto);
+    Page<InfoEmoneyDetailDto> findEmoneyBalancePaging(RequestEmoneySearchDto emoneySearchDto);
 }

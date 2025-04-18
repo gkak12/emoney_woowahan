@@ -1,5 +1,6 @@
 package com.emoney.domain.mapper;
 
+import com.emoney.domain.dto.info.InfoEmoneyDetailDto;
 import com.emoney.domain.dto.response.ResponseEmoneyDetailDto;
 import com.emoney.domain.entity.EmoneyDetail;
 import org.mapstruct.*;
@@ -19,6 +20,9 @@ public interface EmoneyDetailMapper {
     @Mapping(source = "expirationDateTime", target = "expirationDateTime", qualifiedByName = "setLocalDateTimeToString")
     @Mapping(source = "creationDateTime", target = "creationDateTime", qualifiedByName = "setLocalDateTimeToString")
     ResponseEmoneyDetailDto toDto(EmoneyDetail emoneyDetail);
+
+    @Mapping(source = "expirationDateTime", target = "expirationDateTime", qualifiedByName = "setLocalDateTimeToString")
+    ResponseEmoneyDetailDto toDto(InfoEmoneyDetailDto emoneyDetail);
 
     @Named("setLocalDateTimeToString")
     default String setLocalDateTimeToString(LocalDateTime localDateTime) {

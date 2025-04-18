@@ -18,5 +18,6 @@ public class ResponseEmoneyDetailDto {
     private Long amount;
     private String creationDateTime;
     private String expirationDateTime;
+    private boolean expirationFlag;
     private Long emoneySeq;
 }

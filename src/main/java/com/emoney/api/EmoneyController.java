@@ -47,4 +47,10 @@ public class EmoneyController {
     public ResponseEntity<ResponseEmoneyDetailListDto> findEmoneyDetailPaging(@ParameterObject RequestEmoneySearchDto emoneySearchDto){
         return ResponseEntity.ok(emoneyService.findEmoneyDetailPaging(emoneySearchDto));
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/findEmoneyDetailBalancePaging.do")
+    public ResponseEntity<ResponseEmoneyDetailListDto> findEmoneyDetailBalancePaging(@ParameterObject RequestEmoneySearchDto emoneySearchDto){
+        return ResponseEntity.ok(emoneyService.findEmoneyDetailBalancePaging(emoneySearchDto));
+    }
 }

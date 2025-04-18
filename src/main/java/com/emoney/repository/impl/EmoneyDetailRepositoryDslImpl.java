@@ -34,6 +34,31 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    public List<InfoEmoneyDetailDto> findAllUsableEmoneyList(RequestEmoneyDeductDto requestEmoneyDeductDto) {
+        Long userSeq = Objects.requireNonNull(requestEmoneyDeductDto.getUserSeq(), "userSeq is null.");
+        LocalDateTime now = LocalDateTime.now();
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        return jpaQueryFactory
+            .select(Projections.fields(
+                InfoEmoneyDetailDto.class,
+                emoneyDetail.accumulationSeq,
+                emoneyDetail.amount.sum().as("amount"),
+                emoneyDetail.expirationDateTime.min().as("expirationDateTime")
+            ))
+            .from(emoneyDetail)
+            .where(
+                builder
+                    .and(ConditionBuilderUtil.buildEquals(emoneyDetail.userSeq, userSeq))
+                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoneyDetail.expirationDateTime, now, null))
+            )
+            .groupBy(emoneyDetail.accumulationSeq)
+            .orderBy(emoneyDetail.accumulationSeq.asc())
+            .fetch();
+    }
+
+    @Override
     public Page<EmoneyDetail> findEmoneyDetailPaging(RequestEmoneySearchDto emoneySearchDto) {
         Pageable pageable = PageRequest.of(
             emoneySearchDto.getPageNumber(),
@@ -72,40 +97,53 @@ public class EmoneyDetailRepositoryDslImpl implements EmoneyDetailRepositoryDsl 
             .limit(pageable.getPageSize())
             .fetch();
 
-        Long count = Optional
-            .ofNullable(
-                jpaQueryFactory
-                    .select(emoneyDetail.count())
-                    .from(emoneyDetail)
-                    .where(builder)
-                    .fetchOne())
+        Long count = Optional.ofNullable(
+            jpaQueryFactory
+                .select(emoneyDetail.count())
+                .from(emoneyDetail)
+                .where(builder)
+                .fetchOne()
+            )
             .orElse(0L);
 
         return new PageImpl<>(list, pageable, count);
     }
 
     @Override
-    public List<InfoEmoneyDetailDto> findAllUsableEmoneyList(RequestEmoneyDeductDto requestEmoneyDeductDto) {
-        Long userSeq = Objects.requireNonNull(requestEmoneyDeductDto.getUserSeq(), "userSeq is null.");
-        LocalDateTime now = LocalDateTime.now();
+    public Page<InfoEmoneyDetailDto> findEmoneyBalancePaging(RequestEmoneySearchDto emoneySearchDto) {
+        Pageable pageable = PageRequest.of(
+            emoneySearchDto.getPageNumber(),
+            emoneySearchDto.getPageSize()
+        );
 
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(ConditionBuilderUtil.buildEquals(emoneyDetail.userSeq, emoneySearchDto.getUserSeq()));
 
-        return jpaQueryFactory
+        List<InfoEmoneyDetailDto> list = jpaQueryFactory
             .select(Projections.fields(
                 InfoEmoneyDetailDto.class,
                 emoneyDetail.accumulationSeq,
                 emoneyDetail.amount.sum().as("amount"),
-                emoneyDetail.expirationDateTime.max().as("expirationDateTime")
+                emoneyDetail.expirationDateTime.min().as("expirationDateTime")
             ))
             .from(emoneyDetail)
-            .where(
-                builder
-                    .and(ConditionBuilderUtil.buildEquals(emoneyDetail.userSeq, userSeq))
-                    .and(ConditionBuilderUtil.buildDateTimeBetween(emoneyDetail.expirationDateTime, now, null))
-            )
+            .where(builder)
             .groupBy(emoneyDetail.accumulationSeq)
-            .orderBy(emoneyDetail.accumulationSeq.asc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
+
+        Integer count = Optional.ofNullable(
+            jpaQueryFactory
+                .select(emoneyDetail.accumulationSeq)
+                .from(emoneyDetail)
+                .where(builder)
+                .groupBy(emoneyDetail.accumulationSeq)
+                .fetch()
+            )
+            .map(List::size)
+            .orElse(0);
+
+        return new PageImpl<>(list, pageable, count);
     }
 }

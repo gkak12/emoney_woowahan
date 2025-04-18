@@ -158,4 +158,30 @@ public class EmoneyServiceImpl implements EmoneyService {
             .page(page)
             .build();
     }
+
+    @Override
+    public ResponseEmoneyDetailListDto findEmoneyDetailBalancePaging(RequestEmoneySearchDto emoneySearchDto) {
+        final LocalDateTime localDateTime = LocalDateTime.now();
+        Page<InfoEmoneyDetailDto> pageInfo = emoneyDetailRepository.findEmoneyBalancePaging(emoneySearchDto);
+
+        List<ResponseEmoneyDetailDto> list = pageInfo.get().toList().stream()
+            .map(item -> {
+                ResponseEmoneyDetailDto dto = emoneyDetailMapper.toDto(item);
+                boolean flag = localDateTime.compareTo(item.getExpirationDateTime()) < 0;   // true: 사용 가능, false: 사용 불가능
+                dto.setExpirationFlag(flag);
+
+                return dto;
+            })
+            .toList();
+
+        ResponsePageDto page = ResponsePageDto.builder()
+            .totalPages(pageInfo.getTotalPages())
+            .totalItems(pageInfo.getTotalElements())
+            .build();
+
+        return ResponseEmoneyDetailListDto.builder()
+                .list(list)
+                .page(page)
+                .build();
+    }
 }
