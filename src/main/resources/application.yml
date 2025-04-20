@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}  # default dev 환경
+    active: ${springProfilesActive:dev}  # default dev 환경
   config:
     import: jasypt.yml    # jasypt.yml
