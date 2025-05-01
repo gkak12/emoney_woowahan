@@ -57,8 +57,7 @@ public class EmoneyServiceImplTest {
             .toList();
 
         Long totalUsableAmount = list.stream()
-            .map(InfoEmoneyDetailDto::getAmount)
-            .reduce(0L, Long::sum);
+            .mapToLong(InfoEmoneyDetailDto::getAmount).sum();
 
         // Then
         assertEquals(expectationAmount, totalUsableAmount);
@@ -114,7 +113,7 @@ public class EmoneyServiceImplTest {
         }
 
         // Then
-        Long actualAmount = dataList.stream().map(InfoEmoneyDetailDto::getAmount).reduce(0L, Long::sum);
+        Long actualAmount = dataList.stream().mapToLong(InfoEmoneyDetailDto::getAmount).sum();
         assertEquals(expectationAmount, actualAmount);
     }
 }

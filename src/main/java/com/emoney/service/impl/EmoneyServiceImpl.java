@@ -68,8 +68,7 @@ public class EmoneyServiceImpl implements EmoneyService {
             .toList();
 
         Long totalUsableAmount = list.stream()
-            .map(InfoEmoneyDetailDto::getAmount)
-            .reduce(0L, Long::sum);
+            .mapToLong(InfoEmoneyDetailDto::getAmount).sum();
 
         Long requestAmount = emoneyDeductDto.getAmount();
 

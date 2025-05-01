@@ -157,8 +157,7 @@ public class EmoneyDetailRepositoryDslTest {
             .toList();
 
         Long totalUsableAmount = list.stream()
-            .map(InfoEmoneyDetailDto::getAmount)
-            .reduce(0L, Long::sum);
+            .mapToLong(InfoEmoneyDetailDto::getAmount).sum();
 
         // Then
         assertEquals(expectAmount, totalUsableAmount);
